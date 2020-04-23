@@ -1,0 +1,28 @@
+{
+    "Global": {
+        "files": [
+            "./data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
+            "./data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv",
+            "./data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"
+        ],
+        "names": [
+            "Global Confirmed Cases",
+            "Global Death Cases",
+            "Global Recovered Case"
+        ]
+    },
+
+    "United States": {
+        "files": [
+            "./data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv",
+            "./data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv",
+            "./data/csse_covid_19_time_series/time_series_covid19_recovered_US.csv"
+        ],
+        "names": [
+            "United States Confirmed Cases",
+            "United States Death Cases",
+            "United States Recovered Case"
+        ]
+    }
+
+}
