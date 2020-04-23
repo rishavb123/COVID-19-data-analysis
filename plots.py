@@ -28,9 +28,9 @@ def plot_time_series_data(files, names, transform=None, ylabel=None, country=Non
 
     plt.xlabel("Days after January 22, 2020")
     if ylabel is None:
-        plt.ylabel("Cases for " + country if country != None else "Earth")
+        plt.ylabel("Cases for " + (country if country != None else "Earth"))
     else:
-        plt.ylabel(ylabel + " for " + country if country != None else "Earth")
+        plt.ylabel(ylabel + " for " + (country if country != None else "Earth"))
     plt.legend()
 
     return p, mse
