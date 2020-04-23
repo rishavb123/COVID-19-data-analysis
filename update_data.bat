@@ -1,4 +1,4 @@
-REM @echo off
+@echo off
 rmdir data /s /q
 git clone https://github.com/CSSEGISandData/COVID-19.git
 rename COVID-19 data
