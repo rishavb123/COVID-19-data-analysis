@@ -15,6 +15,13 @@ def second_derivative(ys):
         dy.append(ys[i + 1] + ys[i - 1] - 2 * ys[i])
     return dy
 
+def growth_rate(ys):
+    dy = second_derivative(ys)
+    gs = []
+    for i in range(1, len(dy)):
+        gs.append(ys[i] / ys[i - 1])
+    return gs
+
 def smooth(ys, starting_point_ratio=0.3):
     c_points = np.fft.rfft(ys)
     c_points[int(starting_point_ratio * len(c_points)):] = 0
