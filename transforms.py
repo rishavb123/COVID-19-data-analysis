@@ -40,3 +40,6 @@ def polyfit(best_fit_degree):
         p = np.polyfit(list(range(len(ys))), ys, best_fit_degree)
         return [sum([(i ** j) * p[best_fit_degree - j] for j in range(best_fit_degree + 1)]) for i in range(len(ys))]
     return transform
+
+def sub(start, end):
+    return lambda ys: ys[start:end]
