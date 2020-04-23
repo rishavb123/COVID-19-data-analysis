@@ -16,10 +16,11 @@ names = [
 ]
 
 country = "Italy"
+country = "United Kingdom"
 
-# plot_time_series_data(files, names, country=country)
+plot_time_series_data(files, names, country=country)
 # plot_time_series_data(files, names, np.log, "Log(Cases)", country=country)
-plot_time_series_data(files, names, composite([integral]), "\int(Cases)*d(Days)", country=country, best_fit_degree=2)
+# plot_time_series_data(files, names, composite([integral]), "\int(Cases)*d(Days)", country=country, best_fit_degree=2)
 # plot_time_series_data(files, names, composite([derivative, smooth]), "d(Cases)/d(Days)", country=country)
 # plot_time_series_data(files, names, composite([derivative, smooth, derivative, remove_outliers]), "d^2(Cases)/d(Days)^2", country=country)
 
