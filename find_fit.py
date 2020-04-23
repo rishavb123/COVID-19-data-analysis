@@ -13,7 +13,7 @@ country = "United Kingdom"
 max_best_fit_degree = 15
 threshold = 1e-2
 show = False
-transform = None
+transform = lambda ys:ys
 
 last_mse = 0
 orig_mse = 0
