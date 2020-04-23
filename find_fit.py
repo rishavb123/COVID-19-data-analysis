@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 
 from plots import plot_time_series_data
+from transforms import *
 
 files = [
     "./data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
@@ -12,8 +13,8 @@ names = [
 country = "United Kingdom"
 max_best_fit_degree = 15
 threshold = 1e-2
-show = False
-transform = None
+show = True
+transform = composite((sub(0, 20), remove_outliers, integral))
 
 last_mse = 0
 orig_mse = 0
