@@ -1,0 +1,51 @@
+Imagine that the coronavirus behaves like charged particles, and the people in different countries act as the conduits similar 
+to circuit elements.  Use these assumptions to analyze the data for different countries at Johns Hopkins COVID Resource Center 
+<https://coronavirus.jhu.edu/map.html>.  You can click on the upper right corner of the graph portion to bring each graph to a 
+full page and be able to analyze the graph data more precisely.
+
+You may answer the questions below individually or as a whole.
+
+    1.  After answering the questions below, make a prediction about the number of infections and deaths by May 1, June 1.  
+        Do you predict we will or will not return to school in June?  What about September-December?
+    
+    2.  Choose four countries to analyze the data, but as many as you wish.
+    
+    3.  Find the best fit lines for the four countries of your choice.
+    
+    4.  What parts are exponential, what parts are linear?
+    
+    5.  What patterns did you notice in different countries?
+    
+    6.  How can you explain the changing patterns in the graphs?
+    
+    7.  How can you explain the differences?
+    
+    8.  What are the intrinsic values that describe the spread of the coronavirus best?  Use dimensional analysis.
+    
+    9.  What are the intrinsic time values for the countries you chose?  What do you think are the factors determining the 
+        intrinsic time values?
+    
+    10. What do the graphs and data look similar to as circuit elements or physical quantities?
+    
+    11. Which circuit element(s) would you use as a model?  Why?
+    
+    12. Use the circuit element you chose to calculate its value.
+    
+    13. If you were to use multiple circuit elements, which ones would you use in what combinations?
+    
+    14. What kind of differential equation would represent the coronavirus spread?  Be as specific as you can be.
+    
+    15. What kind of matrix would represent the coronavirus spread across countries, continents, and the world?  Be as 
+        specific as you can be.
+    
+    16. What other questions can you add to approach the coronavirus spread as a physics & math problem?  Be specific.
+    
+    17. Consider the fact that as humans we have an immune system.  Our bodies inhabit germs, viruses, bacteria, mites, etc. 
+        We coexist with them, and in fact depend on them for our survival.  Yet, when a harmful infection happens, our body 
+        temperature rises, our immune system takes over, we either eliminate the disease, or suffer the consequences.  It may
+        be safe to assume that the germs, our immune system and all might not even be aware of our existence as a human being.  
+        What similarities do you see in terms of what has been happening to the globe as a result of our actions?  What 
+        similarities do you see between a human and the globe?  What philosophical implications and understandings do you 
+        perceive?
+    
+    18. What other scientific, sociological, and philosophical implications would you like to discuss?
