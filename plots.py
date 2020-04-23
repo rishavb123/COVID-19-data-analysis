@@ -3,7 +3,7 @@ import numpy as np
 
 from transforms import *
 
-def plot_time_series_data(files, names, transform=None, ylabel=None, country=None, best_fit_degree=0):
+def plot_time_series_data(files, names, transform=None, ylabel=None, country=None, best_fit_degree=0, scatter=False, size=10):
     plt.figure()
     if transform is None: transform = lambda ys: ys
     for filename, name in zip(files, names):
@@ -18,7 +18,10 @@ def plot_time_series_data(files, names, transform=None, ylabel=None, country=Non
                     ys[i] += float(l[i])
         f.close()
         ys = transform(ys)
-        plt.plot(ys, label=name)
+        if scatter:
+            plt.scatter(range(len(ys)), ys, label=name, s=size)
+        else:
+            plt.plot(ys, label=name)
         p, mse = None, None
         if best_fit_degree > 0:
             p = np.polyfit(list(range(len(ys))), ys, best_fit_degree)
