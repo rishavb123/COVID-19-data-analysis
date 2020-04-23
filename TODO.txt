@@ -1,0 +1,31 @@
+Modeling:
+
+    N_d = Number of cases on a given day d
+    E = Average number of people someone infected is exposed to each day
+    p = Probability of each exposure becoming an infection
+
+    Exponential Growth:
+
+        \delta N_d = E * p * N_d
+        N_{d+1} = N_d + E * p * N_d
+        N_{d+1} = (1 + E * p) * N_d
+        N_d = [(1 + E * p) ^ d] * N_0
+
+    Logistic Growth:
+
+        dN/dt = c * (1 - N/pop) * N
+        indistinguishable from exponential growth in the begening
+        find points of inflection -> at this point we are about half way through the virus
+        Look for the growth factor: \delta N_d / \delta N_{d-1}
+        before inflection growth factor < 1
+        at point of inflection growth factor = 1
+        after inflection growth factor > 1
+
+    Use Gradient Descent to minimize mse loss to fit some of the models by finding the parameters for exponential and logistic growth (rather than just using polyfit)
+
+Comparisons between countries:
+
+    Matrix (and other) transformations from one country to another
+    Time shifts from one to another (country A is 1 month ahead of country B)
+
+Modelling as a circuit
