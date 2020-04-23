@@ -20,6 +20,9 @@ def smooth(ys, starting_point_ratio=0.3):
     c_points[int(starting_point_ratio * len(c_points)):] = 0
     return np.fft.irfft(c_points)
 
+def smooth_with_custom_ratio(starting_point_ratio=0.3):
+    return lambda ys: smooth(ys, starting_point_ratio=starting_point_ratio)
+
 def composite(transforms):
     def transform(ys):
         for t in transforms:
@@ -41,5 +44,5 @@ def polyfit(best_fit_degree):
         return [sum([(i ** j) * p[best_fit_degree - j] for j in range(best_fit_degree + 1)]) for i in range(len(ys))]
     return transform
 
-def sub(start, end):
+def sub(start=None, end=None):
     return lambda ys: ys[start:end]
