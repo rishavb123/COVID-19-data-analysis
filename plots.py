@@ -3,9 +3,9 @@ import numpy as np
 
 from transforms import *
 
-def plot_time_series_data(files, names, transform=lambda ys: ys, ylabel=None, country=None, best_fit_degree=0):
+def plot_time_series_data(files, names, transform=None, ylabel=None, country=None, best_fit_degree=0):
     plt.figure()
-
+    if transform is None: transform = lambda ys: ys
     for filename, name in zip(files, names):
         f = open(filename)
         lines = f.readlines()
