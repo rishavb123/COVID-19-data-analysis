@@ -9,3 +9,4 @@ def read(filename, country=None):
             for i in range(len(ys)):
                 ys[i] += float(l[i])
     f.close()
+    return ys
