@@ -27,6 +27,3 @@ Comparisons between countries:
 
     Matrix (and other) transformations from one country to another
     Time shifts from one to another (country A is 1 month ahead of country B)
-
-Modelling as a circuit:
-RC -> negative resistance to positive
