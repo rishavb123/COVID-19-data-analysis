@@ -3,10 +3,10 @@ import numpy as np
 import sys
 import time
 
-def maximize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=1, log=True, regularization=False):
+def maximize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99, log=True, regularization=False):
     return minimize(J, theta, lambda theta: -gradients(theta), iterations=iterations, alpha=alpha, alpha_decay=alpha_decay, log=log, regularization=regularization)
 
-def minimize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=1, log=True, regularization=False):
+def minimize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99, log=True, regularization=False):
     for epoch in range(1, 1 + iterations):
         if np.isnan(gradients(theta)[0]): 
             print()
@@ -37,11 +37,11 @@ class Model: # TODO: Vectorize functions, make more effiecient
     def train(self, x, y, epoch=1000, log=True):
         assert len(x) == len(y)
         n = len(x)
-        J = lambda theta: sum([loss(f(x[i], theta), y[i]) for i in range(n)])
+        J = lambda theta: sum([self.loss(self.f(x[i], theta), y[i]) for i in range(n)])
         def gradients(theta):
             grads = []
             for t in range(len(theta)):
-                grads.append(sum([self.loss_derivative(f(x[i], theta), y[i]) * self.f_gradient(theta, x[i])[t] for i in range(n)]))
+                grads.append(sum([self.loss_derivative(self.f(x[i], theta), y[i]) * self.f_gradient(theta, x[i])[t] for i in range(n)]))
             return np.array(grads)
         return minimize(J, self.theta, gradients, iterations=epoch, alpha=self.alpha, alpha_decay=self.alpha_decay, log=log, regularization=self.regularization)
 
