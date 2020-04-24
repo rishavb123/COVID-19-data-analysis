@@ -17,7 +17,7 @@ def minimize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99,
             grad += 2 * theta
         theta -= alpha * grad
         alpha *= alpha_decay
-        print("\tEpoch: {epoch: <20} J: {J: <20} Theta: {theta: <100}".format(epoch=(str(epoch)+"/" + str(iterations))[:20], J=str(J(theta))[:20], theta=str(theta)[:100]), end='\r')
+        print("Epoch: {epoch: <25} J: {J: <25} Theta: {theta: <100}".format(epoch=(str(epoch)+"/" + str(iterations))[:25], J=str(J(theta))[:25], theta=str(theta)[:100]), end='\r')
         if delay: time.sleep(0.1)
     print()
     return J(theta)
