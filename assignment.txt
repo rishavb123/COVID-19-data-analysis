@@ -9,9 +9,9 @@ You may answer the questions below individually or as a whole.
         Do you predict we will or will not return to school in June?  What about September-December?
     
     2.  Choose four countries to analyze the data, but as many as you wish.
-    
+            USA, Spain, Italy, France, China
     3.  Find the best fit lines for the four countries of your choice.
-    
+            
     4.  What parts are exponential, what parts are linear?
     
     5.  What patterns did you notice in different countries?
