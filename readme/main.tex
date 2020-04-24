@@ -77,5 +77,26 @@
             \begin{center}
                 \includegraphics[width=10cm]{plots/global/cases.png}
             \end{center}
+            At a first glance, this looks like exponential growth, so I then plotting a logarithmic graph with a line of best-fit.
+            \begin{center}
+                \includegraphics[width=10cm]{plots/global/log(cases).png}
+            \end{center}
+            A linear relationship in the logarithmic graph corresponds to an exponential relationship in the original graph. As we can see, the logarithmic graph is approximately linear, which confirms that so far, the coronavirus is exponentially growing. But we also see that the curve is beginning to flatten out, corresponding to the true logarithmic growth of the original graph. The beginning of all logarithmic graphs appear to be exponential, which explains why it apears as it does. 
+            \newline
+            \indent Now, we know that logarithmic growth will eventually level out, and it is in our interest to see when and where it will do this globally. We can do this by tracking the growth rate of the graph. 
+            \newline
+            \indent First let's define some variables:
+            \begin{itemize}
+                \item Let us refer to the region we are talking about as $X$. For now $X$ refers to the entire globe.
+                \item Let $N^X$ be the current number of people who have COVID-19 within $X$. I may sometimes just use $N$, which will refer to the region in question at the time.
+                \item Let $N^X_i$ be the current number of people who have COVID-19 within $X$ on the $i$-th day after January 22nd (which is when John Hopkins began collecting data).
+                \item Let $\Delta N^X_i = N^X_i - N^X_{i - 1}$ be the number of new cases on a given day, defined by $i$.
+            \end{itemize}
+            Now we can define our growth rate as 
+            $$G^X_i = \dfrac{\Delta N^X_i}{\Delta N^X_{i - 1}}$$
+            We are interested when this value crosses from $G > 1$ to $G < 1$, which corresponds to a point of infection. It is when the numbers of new cases each day begins to decrease rather than increase. Or in terms of calculus, when the second derivative becomes negative. The reason we do not just use the second derivative is that this data is noisy and approximating a high-order derivative would not work too well. Now plotting the growth rate:
+            \begin{center}
+                \includegraphics[width=10cm]{plots/global/growth_rate.png}
+            \end{center}
             
 \end{document}
