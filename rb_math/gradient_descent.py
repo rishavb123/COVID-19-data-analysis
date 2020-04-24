@@ -21,7 +21,7 @@ def minimize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=1, lo
     print()
     return J(theta)
 
-class Model:
+class Model: # TODO: Vectorize functions, make more effiecient
 
     def __init__(self, f, theta_0, f_gradient, loss, loss_derivative, alpha=0.01, alpha_decay=0.99, regularization=False):
         self.f = f
