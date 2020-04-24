@@ -3,10 +3,10 @@ import numpy as np
 import sys
 import time
 
-def maximize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99, log=True, regularization=False):
-    return minimize(J, theta, lambda theta: -gradients(theta), iterations=iterations, alpha=alpha, alpha_decay=alpha_decay, log=log, regularization=regularization)
+def maximize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99, log=True, regularization=False, delay=False):
+    return minimize(J, theta, lambda theta: -gradients(theta), iterations=iterations, alpha=alpha, alpha_decay=alpha_decay, log=log, regularization=regularization, delay=delay)
 
-def minimize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99, log=True, regularization=False):
+def minimize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99, log=True, regularization=False, delay=False):
     for epoch in range(1, 1 + iterations):
         if np.isnan(gradients(theta)[0]): 
             print()
@@ -18,6 +18,7 @@ def minimize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99,
         theta -= alpha * grad
         alpha *= alpha_decay
         print("\tEpoch: {epoch: <20} J: {J: <20} Theta: {theta: <100}".format(epoch=(str(epoch)+"/" + str(iterations))[:20], J=str(J(theta))[:20], theta=str(theta)[:100]), end='\r')
+        if delay: time.sleep(0.1)
     print()
     return J(theta)
 
