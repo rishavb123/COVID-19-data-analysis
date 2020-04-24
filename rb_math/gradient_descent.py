@@ -6,7 +6,7 @@ import time
 def maximize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99, log=True, regularization=False, delay=False):
     return minimize(J, theta, lambda theta: -gradients(theta), iterations=iterations, alpha=alpha, alpha_decay=alpha_decay, log=log, regularization=regularization, delay=delay)
 
-def minimize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99, log=True, regularization=False, delay=False):
+def minimize(J, theta, gradients, iterations=1000, alpha=0.01, alpha_decay=0.99, log=True, regularization=False, delay=False): # TODO: Check for convergence: if next_theta == theta: break
     for epoch in range(1, 1 + iterations):
         if np.isnan(gradients(theta)[0]): 
             print()
