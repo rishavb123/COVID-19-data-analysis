@@ -1,4 +1,4 @@
-def read(filename, country):
+def read(filename, country=None):
     f = open(filename)
     lines = f.readlines()
     ys = [0 for _ in lines[0].split(',')[3:]]
