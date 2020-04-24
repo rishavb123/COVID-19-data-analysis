@@ -7,25 +7,34 @@
 \usepackage{listings}
 \usepackage{color}
 
+\definecolor{red}{rgb}{1,0,0}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
-\lstset{frame=tb,
-  language=Bash,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
-  breaklines=true,
-  breakatwhitespace=true,
-  tabsize=3
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+\lstset{
+    frame=tb,
+    language=Bash,
+    aboveskip=3mm,
+    belowskip=3mm,
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\small\ttfamily},
+    numbers=none,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=3
 }
 
 \title{COVID-19 Data Analysis}
@@ -43,7 +52,7 @@
         It contains information on daily reports (including new cases, deaths, and recoveries), and global trends. 
         \newline \indent
         Here is the link to the datasets I used: 
-        \newline\indent\indent\href{https://github.com/CSSEGISandData/COVID-19}{https://github.com/CSSEGISandData/COVID-19}
+        \newline\indent\indent \href{https://github.com/CSSEGISandData/COVID-19}{https://github.com/CSSEGISandData/COVID-19}
         \subsection{Downloading the Data}
             I created a batch script to download all this data using git, delete files that are not needed for my analysis, and move the files into more convienient locations.
             \begin{lstlisting}
@@ -63,7 +72,7 @@
                 git commit -m "updated data from John Hopkins github repo"
                 git push
             \end{lstlisting}
-        \subsection{First Looks}
+        \subsection{Initial Analysis}
             First, I plotted the global coronavirus data (cases vs days) in a similar fashion to the way it was plotting on the John Hopkins project. This is to reveal any obvious trends.
             \begin{center}
                 \includegraphics[width=10cm]{plots/global/cases.png}
