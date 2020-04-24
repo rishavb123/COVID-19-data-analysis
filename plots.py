@@ -4,11 +4,11 @@ import numpy as np
 from transforms import *
 from data import read
 
-def plot_time_series_data(files, names, transform=None, ylabel=None, country=None, best_fit_degree=0, scatter=False, size=10):
+def plot_time_series_data(files, names, transform=None, ylabel=None, country=None, best_fit_degree=0, scatter=False, size=10, usa=False):
     plt.figure()
     if transform is None: transform = lambda ys: ys
     for filename, name in zip(files, names):
-        ys = transform(read(filename, country))
+        ys = transform(read(filename, country=country, usa=usa))
         if scatter:
             plt.scatter(range(len(ys)), ys, label=name, s=size)
         else:
