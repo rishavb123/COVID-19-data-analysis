@@ -35,7 +35,7 @@ class Model: # TODO: Vectorize functions, make more effiecient
         self.alpha_decay = alpha_decay
         self.regularization = regularization
 
-    def train(self, x, y, epoch=1000, log=True):
+    def train(self, x, y, epoch=1000, delay=False, log=True):
         assert len(x) == len(y)
         n = len(x)
         J = lambda theta: sum([self.loss(self.f(x[i], theta), y[i]) for i in range(n)])
@@ -44,7 +44,7 @@ class Model: # TODO: Vectorize functions, make more effiecient
             for t in range(len(theta)):
                 grads.append(sum([self.loss_derivative(self.f(x[i], theta), y[i]) * self.f_gradient(theta, x[i])[t] for i in range(n)]))
             return np.array(grads)
-        return minimize(J, self.theta, gradients, iterations=epoch, alpha=self.alpha, alpha_decay=self.alpha_decay, log=log, regularization=self.regularization)
+        return minimize(J, self.theta, gradients, iterations=epoch, alpha=self.alpha, alpha_decay=self.alpha_decay, log=log, regularization=self.regularization, delay=delay)
 
     def predict(self, x):
         return np.array([self.f(xi, self.theta) for xi in x])
