@@ -94,24 +94,42 @@
         \indent First let's define some variables:
         \begin{itemize}
             \item Let us refer to the region we are talking about as $X$. For now $X$ refers to the entire globe.
-            \item Let $N^X$ be the current number of people who have COVID-19 within $X$. I may sometimes just use $N$, which will refer to the region in question at the time.
+            \item Let $N^X$ be the final number of people who have COVID-19 within $X$. I may sometimes just use $N$, which will refer to the region in question at the time.
             \item Let $N^X_i$ be the current number of people who have COVID-19 within $X$ on the $i$-th day after January 22nd (which is when John Hopkins began collecting data).
             \item Let $\Delta N^X_i = N^X_i - N^X_{i - 1}$ be the number of new cases on a given day, defined by $i$.
+            \item In a similar way, define $D^X, D^X_i, \Delta D^X_i$ as the people who died due to COVID-19 in the respective time frames.
+            \item In a similar way, define $R^X, R^X_i, \Delta R^X_i$ as the people who recovered from COVID-19 in the respective time frames.
         \end{itemize}
+        While doing the analysis on the data, I will focus on the number of cases, but the number of deaths and recoveries also follow very similar patterns.
+        \subsection{Growth Ratio}
+        Another intrinsic value that can give us insight into the data is the growth ratio. Let define this as
+        \begin{equation}
+            R^X_i = \dfrac{N^X_i}{N^X_{i - 1}}
+        \end{equation}
+        For pure exponential growth the ratio should be a constant number throughout the entire domain, but since the ratio is decaying with time (as we see in the graph below), there is more evidence pointing to a more logistic approach. We see that the growth ratio is approaching one for both the cases and deaths, showing that eventually $N^X_i \rightarrow N^X$.
+        \newline
+        \indent Another interesting observation that is made apparant from this graph is the relationship between the deaths and cases. In other graphs this relationship is also evident, but here they are both plotted on the same scale so it is even more clear. The deaths are following a similar pattern as the cases, but they are slightly time-shifted (forward in time). This makes sense since we would expect a ratio of cases to become death in a certain time.
+        \newline
+        \indent We can also estimate the effectiveness of our treatment by checking if the death ratios start to become less that the cases ratios, but it is clear that this is not the cases currently, implying that we have not yet found a proper treatment.
+        \newline
+        \indent A further and more rigorous analysis of this graph and more detailed data could also give us insight to how long it takes the coronavirus to cause death on average.
+        \begin{center}
+            \includegraphics[width=10cm]{plots/global/growth_ratios.png}
+        \end{center}
         \subsection{Growth Rate}
-            Now we can define our growth rate as 
-            \begin{equation}
-                G^X_i = \dfrac{\Delta N^X_i}{\Delta N^X_{i - 1}}
-            \end{equation}
-            We are interested when this value crosses from $G > 1$ to $G < 1$, which corresponds to a point of infection. It is when the numbers of new cases each day begins to decrease rather than increase. Or in terms of calculus, when the second derivative becomes negative. The reason we do not just use the second derivative is that this data is noisy and approximating a high-order derivative would not work too well. Now plotting the growth rate:
-            \begin{center}
-                \includegraphics[width=10cm]{plots/global/growth_rate.png}
-            \end{center}
-            If the graph continues to follow the polyfit curve drawn, then we expect the inflection point to occur soon, but we do not know if it will go back up as it did at around $i = 25$. In fact, we can expect it to go up, which is evident by plotting the approximated derivative
-            \footnote{
-                When I refer to the derivative I am using the central difference approximation give by:
-                $$f'(x) \approx \dfrac{f(x + h) - f(x - h)}{2h}$$
-                with $h = 1$ since we have a discrete input space (each day).
+        Now we can define our growth rate as 
+        \begin{equation}
+            G^X_i = \dfrac{\Delta N^X_i}{\Delta N^X_{i - 1}}
+        \end{equation}
+        We are interested when this value crosses from $G > 1$ to $G < 1$, which corresponds to a point of infection. It is when the numbers of new cases each day begins to decrease rather than increase. Or in terms of calculus, when the second derivative becomes negative. The reason we do not just use the second derivative is that this data is noisy and approximating a high-order derivative would not work too well. Now plotting the growth rate:
+        \begin{center}
+            \includegraphics[width=10cm]{plots/global/growth_rate.png}
+        \end{center}
+        If the graph continues to follow the polyfit curve drawn, then we expect the inflection point to occur soon, but we do not know if it will go back up as it did at around $i = 25$. In fact, we can expect it to go up, which is evident by plotting the approximated derivative
+        \footnote{
+            When I refer to the derivative I am using the central difference approximation give by:
+            $$f'(x) \approx \dfrac{f(x + h) - f(x - h)}{2h}$$
+            with $h = 1$ since we have a discrete input space (each day).
             } of the growth function.
             \begin{center}
                 \includegraphics[width=10cm]{plots/global/growth_rate_derivative.png}
@@ -120,21 +138,23 @@
             \newline
             \indent This is a dissapointing result since finding the true point of inflection will let us estimate where the number of cases will max out. If the point of inflection occurs at $i$, then it is reasonable to guess that the number of cases will max at $2 * N^X_i$ by the way logistic growth works.
             \subsubsection{Modelling with the Growth Rate}
-                The curve generated by \lstinline{np.polyfit} fits the growth rate pretty well, so it may be possible to create a model based on the growth rate. To do so, we just have to follow the definitions of the growth rate and the solve for $N_i$:
-                \begin{align*}
-                    G^X_i = \dfrac{\Delta N^X_i}{\Delta N^X_{i - 1}} = \dfrac{N^X_i - N^X_{i - 1}}{N^X_{i - 1} - N^X_{i - 2}} \\
-                    G^X_i(N^X_{i - 1} - N^X_{i - 2}) = N^X_i - N^X_{i - 1}
-                \end{align*}
-                and finally
-                \begin{equation}
-                    N^X_i = N^X_{i - 1} + G^X_i(N^X_{i - 1} - N^X_{i - 2})
-                \end{equation}
-                But there are a lot of problems with a model like this. For one it is based on previous estimates, so any error in early estimates will propagate through to the later estimates, making the model extremely inaccurate for anything too far out of the domain of the data.
-                \newline
-                \indent Also, as we showed before, the growth rate will likely not follow the polyfit curve outside the domain of the data.
-        \subsection{Growth Ratio}
-            Another intrinsic value to 
+            The curve generated by \lstinline{np.polyfit} fits the growth rate pretty well, so it may be possible to create a model based on the growth rate. To do so, we just have to follow the definitions of the growth rate and the solve for $N_i$:
+            \begin{align*}
+                G^X_i = \dfrac{\Delta N^X_i}{\Delta N^X_{i - 1}} = \dfrac{N^X_i - N^X_{i - 1}}{N^X_{i - 1} - N^X_{i - 2}} \\
+                G^X_i(N^X_{i - 1} - N^X_{i - 2}) = N^X_i - N^X_{i - 1}
+            \end{align*}
+            and finally
+            \begin{equation}
+                N^X_i = N^X_{i - 1} + G^X_i(N^X_{i - 1} - N^X_{i - 2})
+            \end{equation}
+            But there are a lot of problems with a model like this. For one it is based on previous estimates, so any error in early estimates will propagate through to the later estimates, making the model extremely inaccurate for anything too far out of the domain of the data.
+            \newline
+            \indent Also, as we showed before, the growth rate will likely not follow the polyfit curve outside the domain of the data.
         \subsection{Derivative}
+            The derivative (approximated) of $N^X_i$ with respect to $i$, or $\dfrac{dN^X_i}{di}$, is an important value to look at since it can also help us classify the type of model the spread of coronavirus is following. In an exponential model, we would see $\dfrac{dN^X_i}{di} \propto N^X_i$. Now plotting the derivative:
+            \begin{center}
+                \includegraphics[width=10cm]{plots/global/derivative.png}
+            \end{center}
         \subsection{Fitting Polynomials to Subsets of the Data}
         \subsection{Country Analysis}
         \subsection{Auto Analysis}
@@ -152,5 +172,8 @@
         \subsection{Libraries}
         \subsection{Project Structure}
         \subsection{RB Math Package}
+            \subsubsection{Gradient Descent and Models}
+            \subsubsection{Transforms}
+            \subsubsection{Plot Function}
         \subsection{Plots}
 \end{document}
