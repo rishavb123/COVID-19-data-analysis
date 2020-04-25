@@ -151,23 +151,106 @@
             \newline
             \indent Also, as we showed before, the growth rate will likely not follow the polyfit curve outside the domain of the data.
         \subsection{Derivative}
-            The derivative (approximated) of $N^X_i$ with respect to $i$, or $\dfrac{dN^X_i}{di}$, is an important value to look at since it can also help us classify the type of model the spread of coronavirus is following. In an exponential model, we would see $\dfrac{dN^X_i}{di} \propto N^X_i$. Now plotting the derivative:
+            The derivative (approximated) of $N^X_i$ with respect to $i$, or $\dfrac{dN^X_i}{di}$, is an important value to look at since it can also help us classify the type of model the spread of coronavirus is following. In an exponential model, we would see $\dfrac{dN^X_i}{di} \propto N^X_i$, while in a logistic model we would expect $\dfrac{dN^X_i}{di} \propto (1 - N^X_i / N^X)N^X_i$. Now plotting the derivative:
             \begin{center}
                 \includegraphics[width=10cm]{plots/global/derivative.png}
             \end{center}
+            As expected the derivative is never negative since that would meann the number of cases are going down, which is impossible (since the number of cases is defined as the number of all cases recorded and does not decrement from recoveries).
+            \newline
+            \indent Putting this graph next to one of the number of cases, we can compare them to see proportionality and see what type of model the spread is following. I will do this with the Analysis Dashboard for Global Cases, which I talk about more in \hyperref[sec:country]{Section 2.5}
+            \begin{center}
+                \includegraphics[width=\textwidth]{plots/global/analyze.png}
+            \end{center}
+            The derivative is initially approximately proportion to the number of cases, which is seen by looking at the first and third graphs. But then the derivative starts to level off as expected by logistic growth. The derivative is starting to decrease implying a critical point. Now if we assume that the graph will continue to fall in this manner we can expect the derivative to go back to 0 at around $i=120$, or about 4 months after January 22, which puts us at around the end of April. Once the derivative is back at zero there will be no new cases and the virus will have stopped spreading. But a crude prediction such as that one does not account for skew, since chances are that the graph will be right skewed, since that is how logistic graphs are. Accounting for this we can expect the curve to flatten out a bit later than the end of April. 
+            \newline
+            \indent Another option is that we can try to use an initial subset of the data to try to estimate the proportionality constant $c$ by
+            \begin{equation}
+                \dfrac{dN^X_i}{di} = c(1 - N^X_i/N^X)N^X_i
+            \end{equation}
+            where $(1 - N^X_i/N^X) \approx 1$ (in the initial subset), so $\dfrac{dN^X_i}{di} \approx cN^X_i$. After finding $c$, we can use the graph for the derivative to estimate $N^X$, assuming a perfectly logistic model. I will actually implement this in \hyperref[sec:auto]{Section 2.6}.
         \subsection{Fitting Polynomials to Subsets of the Data}
+            The numpy module has a \lstinline{polyfit} method that can take a bunch of data and fit a polynomial of a given degree to it. In theory, this can be used to create a model for the COVID-19 data, but there are many problems with this\footnote{I go further in depth into these problems in \hyperref[sec:problems]{Section 3.1}}. But we can still use a technique like this to gain insights into our data.
+            \subsubsection{Finding the Best Degree for Polyfit}
+                Just like any other model, we can measure how well the generated polynomial fits the data using some sort of loss function. I used mean squared error, defined by
+                \begin{equation}
+                    MSE(\vec{p}, (N^X_i)) = \dfrac{1}{N}\sum_{i=0}^{N - 1}(N_i^X - \vec{p} \cdot \vec{x}(i))^2
+                \end{equation}
+                for our polynomial model, where $\vec{p}$ is a vector containing the weights for our polynomial model, $N$ is the number of samples. The function $\vec{x}(i)$ returns a vector defined by
+                \begin{equation}
+                    x(i) = [i^m, i^{m - 1}, i^{m-2}, \dots, i^2, i, 1]
+                \end{equation}
+                where $m$ is the polynomial's degree. The vectors $\vec{p}$ and $\vec{x}(i)$ have length $m + 1$. Here $x$ acts as a feature transformer. 
+                \newline\indent
+                Now to find the smallest $m$ that has a good fit to our data, I track the ratio between the impovement since $m - 1$ and the original $MSE$ with $m = 1$ and increment $m$ until it is less than a theshold $\epsilon$. Essentially I find the smallest $m$, where
+                \begin{equation}
+                    \dfrac{MSE(\vec{p_m}, (N_i^X)) - MSE(\vec{p_{m - 1}}, (N_i^X))}{MSE(\vec{p_1}, (N_i^X))} < \epsilon
+                \end{equation}
+                where the $MSE$ for $m = 1$ is used as a scaling factor. After this we know that after $m - 1$ there is not going to be much improvement, so we do our polyfits on $m - 1$.
+            \subsubsection{Correlations Between the Best Degree and Subsets of the Data}
+                From now on, I will refer to $m$ as the best degree to use \lstinline{np.polyfit} with. I will use python subindexing, which is defined like this: If
+                $$x = [1,2,3,4,5]$$
+                then
+                $$x[0:2] = [1,2]$$
+                And it is [inclusive, exclusive]. Now define, $m(j) = \text{findBestDegree}((N_i^X)[0:j])$. Incrementing up $j$ and calculating $m(j)$, we are essentially finding a best fit polynomial of optimal degree for more and more of the data. Here is some of the polyfits for some subsets (incrementing by 10):
+                \begin{center}
+                    \includegraphics[width=\textwidth]{plots/global/fit-merged.png}
+                \end{center}
+                Now, there are two main factors in play as we increase $j$: there is more data to model, and the rate of change keeps increasing more as we get further in $(N_i^X)$, requiring a higher polynomial degree to model. Both of these require a higher degree to model as $j$ increases. 
+                \begin{center}
+                    \includegraphics[width=10cm]{plots/global/degree_vs_subset.png}
+                \end{center}
+                In this plot the linear regression line is drawn based on the only the $j < 50$. And the graph exihibits the predicted pattern while $j < 50$, increasing $m$ with $j$, but after around $j = 55$, the $m$ stays constant at 4. Cross-referencing this with our previous finding that there is a point of inflection around that point (since $dG^X_i/di = 0$), I am guessing that the rate of change of the function slowed down enough for a polynomial of order $m = 4$ to model the graph.
+                \newline\indent
+                Another interesting thing to see is that the points on the graph are clustered, which makes sense since adding one point will likely not change $m$ by at least one everytime, and the output space is discrete, causing clusters to from. 
         \subsection{Country Analysis}
+        \label{sec:country}
+            To do an analysis of the countries, I will be using a "dashboard" with a bunch of graphs that each convey different information. Many of the graphs are talked about in previous sections talking about the global data. But now we will focus in on other regions (different values for $X$).
+            \newline\indent
+            Many of the observations I make will be in relation to the global dashboard. One of the difference that apply to all countries is that the graphs are scaled down from the global scale, but since we are analyzing trends, the amplitude does not matter too much.
+            \begin{center}
+                \includegraphics[width=10cm]{plots/global/analyze.png}
+            \end{center}
+            \subsubsection{United States}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{plots/united_states/analyze.png}
+                \end{center}
+            \subsubsection{China}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{plots/china/analyze.png}
+                \end{center}
+            \subsubsection{Italy}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{plots/italy/analyze.png}
+                \end{center}
+            \subsubsection{Spain}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{plots/spain/analyze.png}
+                \end{center}
+            \subsubsection{India}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{plots/india/analyze.png}
+                \end{center}
+            \subsubsection{France}
+                \begin{center}
+                    \includegraphics[width=\textwidth]{plots/france/analyze.png}
+                \end{center}
         \subsection{Auto Analysis}
+            \label{sec:auto}
             TODO: Code the auto analysis stuff
     \section{Modelling}
         \subsection{Problems with Polynomial (Polyfit) Models}
+        \label{sec:problems}
         \subsection{Gradient Descent}
         \subsection{Logistic Growth Model}
+            \subsubsection{Using Gradient Descent}
+                TODO: fix the negative sign and redo entire thing
+            \subsubsection{Transforming the features and then performing Linear Regression}
         \subsection{Markov Chain Model}
             TODO: Code Markov Chain Model
         \subsection{RLC Circuit Model}
         \subsection{Neural Network}
             TODO: Code the neural network stuff
+    \section{Conclusion}
     \section{The Code}
         \subsection{Libraries}
         \subsection{Project Structure}
