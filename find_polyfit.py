@@ -10,11 +10,12 @@ names = [
     "Global Confirmed Cases"
 ]
 
-country = "United Kingdom"
+country = None
 max_best_fit_degree = 15
 threshold = 1e-2
 show = True
-transform = composite((sub(0, 20), remove_outliers, integral))
+import sys
+transform = composite((sub(0, int(sys.argv[1])), remove_outliers))
 
 last_mse = 0
 orig_mse = 0
