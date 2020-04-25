@@ -17,11 +17,11 @@ from rb_math.transforms import *
 
 files = [
     "./data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv",
-    # "./data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"
+    "./data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"
 ]
 names = [
     "United States Confirmed Cases",
-    # "United States Death Cases"
+    "United States Death Cases"
 ]
 
 # country = "Italy"
