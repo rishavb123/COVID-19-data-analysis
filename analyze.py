@@ -1,7 +1,6 @@
 import os
 import sys
 
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -18,13 +17,13 @@ elif countries[0] == "Test":
 elif countries[0] == "Input":
     countries = [input("Enter a country:") for i in range(int(input("How many countries would you like to view:")))]
 
-backend = matplotlib.get_backend()
-
 for country in countries:
     print("Beginning Analysis on " + country + " Data")
     s = (2, 3)
-    fig, axs = plt.subplots(s[0], s[1])
-    fig.canvas.set_window_title(country + " Analysis")
+    fig_name = country + " Analysis"
+    fig, axs = plt.subplots(s[0], s[1], num=fig_name)
+    # fig.canvas.set_window_title(fig_name)
+    # plt.figure(fig_name)
     d = data[country]
     transforms = (None, safe_log, composite([derivative, remove_outliers]), composite([ratios, remove_outliers]), composite([growth_rate, remove_outliers]), composite([growth_rate, remove_outliers, derivative, remove_outliers, remove_outliers]))
     names = (None, 'logarithm', 'derivative', 'ratios', 'growth rate', 'growth rate derivative')
@@ -63,23 +62,16 @@ for country in countries:
     if 'recovered' in d:
         plot_with_tranforms(d['death'] + d['recovered'], '(death + recovered)', transforms, names)
 
-    manager = plt.get_current_fig_manager()
-
-    if backend == 'TkAgg':
-        manager.resize(*manager.window.maxsize())
-    elif backend == 'wxAgg':
-        manager.frame.Maximize(True)
-    elif backend == 'Qt4Agg':
-        manager.window.showMaximized()
+    fig.set_size_inches(20, 10)
 
     for ax in axs:
         for a in ax:
             leg = a.legend(fancybox=False, shadow=False)
             leg.get_frame().set_alpha(0.4)
 
-    plt.show()
-
-    p = "./res/imgs/plots/" + country.lower().replace(" ", "_")
+    p = "res/imgs/plots/" + country.lower().replace(" ", "_")
     if not os.path.exists(p):
         os.mkdir(p)
-    plt.savefig(p + "/analyze.png")       
+    fig.savefig(p + "/analyze.png")  
+
+    plt.show()
