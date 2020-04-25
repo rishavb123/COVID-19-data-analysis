@@ -29,7 +29,7 @@ def get_structured_data():
         with open(filename) as f:
             reader = csv.reader(f)
             fields = next(reader)
-            data["Global"][name] = np.zeroes(len(fields) - 4)
+            data["Global"][name] = np.zeros(len(fields) - 4)
             for row in reader:
                 if row[1] not in data:
                     data[row[1]] = {}
