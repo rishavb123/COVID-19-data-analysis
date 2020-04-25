@@ -15,6 +15,9 @@ def second_derivative(ys):
         dy.append(ys[i + 1] + ys[i - 1] - 2 * ys[i])
     return dy
 
+def ratios(ys):
+    return [ys[i + 1] / ys[i] for i in range(len(ys) - 1)]
+
 def growth_rate(ys):
     dy = second_derivative(ys)
     gs = []
