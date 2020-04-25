@@ -4,7 +4,7 @@ import numpy as np
 from rb_math.transforms import *
 from data import read
 
-def plot_time_series_data(files, names, transform=None, ylabel=None, country=None, best_fit_degree=0, scatter=False, size=10, usa=False):
+def plot_time_series_data_from_file(files, names, transform=None, ylabel=None, country=None, best_fit_degree=0, scatter=False, size=10, usa=False):
     plt.figure()
     if transform is None: transform = lambda ys: ys
     for filename, name in zip(files, names):
