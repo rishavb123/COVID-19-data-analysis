@@ -15,14 +15,19 @@ def second_derivative(ys):
         dy.append(ys[i + 1] + ys[i - 1] - 2 * ys[i])
     return dy
 
+def exclude(transform, val, default_val):
+    def t(ys):
+        return [transform(y) if y != val else default_val for y in ys]
+    return t
+
 def ratios(ys):
-    return [ys[i + 1] / ys[i] for i in range(len(ys) - 1)]
+    return [ys[i + 1] / ys[i] if ys[i] != 0 else 1 for i in range(len(ys) - 1)]
 
 def growth_rate(ys):
     dy = second_derivative(ys)
     gs = []
     for i in range(1, len(dy)):
-        gs.append(ys[i] / ys[i - 1])
+        gs.append(ys[i] / ys[i - 1] if ys[i - 1] != 0 else 1)
     return gs
 
 def smooth(ys, starting_point_ratio=0.3):
@@ -56,3 +61,5 @@ def polyfit(best_fit_degree):
 
 def sub(start=None, end=None):
     return lambda ys: ys[start:end]
+
+safe_log = exclude(np.log, 0, 0)
