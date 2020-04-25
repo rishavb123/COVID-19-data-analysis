@@ -21,10 +21,12 @@ def plot_time_series_data(files, names, transform=None, ylabel=None, country=Non
             plt.plot(bf_ys, label=name + " Polyfit")
 
     plt.xlabel("Days after January 22, 2020")
+    c = (country if country != None else "Earth")
+    if usa: c = "United States"
     if ylabel is None:
-        plt.ylabel("Cases for " + (country if country != None else "Earth"))
+        plt.ylabel("Cases for " + c)
     else:
-        plt.ylabel(ylabel + " for " + (country if country != None else "Earth"))
+        plt.ylabel(ylabel + " for " + c)
     plt.legend()
 
     return p, mse
