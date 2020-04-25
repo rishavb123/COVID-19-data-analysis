@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 from plots import plot_time_series_data
-from transforms import *
+from rb_math.transforms import *
 
 files = [
     "./data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"

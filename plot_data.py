@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from plots import plot_time_series_data
-from transforms import *
+from rb_math.transforms import *
 
 files = [
     "./data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
@@ -34,6 +34,8 @@ plot_time_series_data(files, names, np.log, "Log(Cases)", country=country, best_
 # plot_time_series_data(files, names, composite([integral]), "\int(Cases)*d(Days)", country=country)
 # plot_time_series_data(files, names, composite([derivative, smooth]), "d(Cases)/d(Days)", country=country)
 plot_time_series_data(files[:1], names[:1], composite([growth_rate, remove_outliers]), "Growth Rate of Cases", best_fit_degree=4, country=country, scatter=True)
+plot_time_series_data(files[:1], names[:1], composite([growth_rate, remove_outliers, derivative, remove_outliers]), "d(Growth Rate of Cases)/d(Days)", best_fit_degree=4, country=country, scatter=True)
+plt.plot([0, 100], [0, 0], label='Zero')
 # plot_time_series_data(files, names, composite([derivative, smooth, derivative, remove_outliers]), "d^2(Cases)/d(Days)^2", country=country)
 
 

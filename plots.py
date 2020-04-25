@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from transforms import *
+from rb_math.transforms import *
 from data import read
 
 def plot_time_series_data(files, names, transform=None, ylabel=None, country=None, best_fit_degree=0, scatter=False, size=10, usa=False):
