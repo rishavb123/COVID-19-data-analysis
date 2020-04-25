@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 
 \usepackage{physics}
 \usepackage{graphicx}
@@ -11,6 +11,10 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\renewcommand{\thesection}{\arabic{section}}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
 
 \hypersetup{
     colorlinks=true,
@@ -45,6 +49,8 @@
 
 \begin{document}
     \maketitle
+    \tableofcontents
+    \newpage
     \section{Dataset}
         I used the dataset that was collected and used by John Hopkins University for 
         \href{https://www.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6}{this project}. 
@@ -126,4 +132,5 @@
                 But there are a lot of problems with a model like this. For one it is based on previous estimates, so any error in early estimates will propagate through to the later estimates, making the model extremely inaccurate for anything too far out of the domain of the data.
                 \newline
                 \indent Also, as we showed before, the growth rate will likely not follow the polyfit curve outside the domain of the data.
+            
 \end{document}
