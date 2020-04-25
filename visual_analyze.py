@@ -62,7 +62,7 @@ for country in countries:
     if 'recovered' in d:
         plot_with_tranforms(d['death'] + d['recovered'], '(death + recovered)', transforms, names)
 
-    fig.set_size_inches(20, 10)
+    fig.set_size_inches(19, 10)
 
     for ax in axs:
         for a in ax:
@@ -72,6 +72,6 @@ for country in countries:
     p = "res/imgs/plots/" + country.lower().replace(" ", "_")
     if not os.path.exists(p):
         os.mkdir(p)
-    fig.savefig(p + "/analyze.png")  
+    fig.savefig(p + "/analyze.png", bbox_inches='tight')  
 
     plt.show()
