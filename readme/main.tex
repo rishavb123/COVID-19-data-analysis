@@ -102,9 +102,9 @@
         \end{itemize}
         While doing the analysis on the data, I will focus on the number of cases, but the number of deaths and recoveries also follow very similar patterns.
         \subsection{Growth Ratio}
-        Another intrinsic value that can give us insight into the data is the growth ratio. Let define this as
+        Another intrinsic value that can give us insight into the data is the growth ratio. Let's define this as
         \begin{equation}
-            R^X_i = \dfrac{N^X_i}{N^X_{i - 1}}
+            GR^X_i = \dfrac{N^X_i}{N^X_{i - 1}}
         \end{equation}
         For pure exponential growth the ratio should be a constant number throughout the entire domain, but since the ratio is decaying with time (as we see in the graph below), there is more evidence pointing to a more logistic approach. We see that the growth ratio is approaching one for both the cases and deaths, showing that eventually $N^X_i \rightarrow N^X$.
         \newline
@@ -161,7 +161,7 @@
             \begin{center}
                 \includegraphics[width=\textwidth]{plots/global/analyze.png}
             \end{center}
-            The derivative is initially approximately proportion to the number of cases, which is seen by looking at the first and third graphs. But then the derivative starts to level off as expected by logistic growth. The derivative is starting to decrease implying a critical point. Now if we assume that the graph will continue to fall in this manner we can expect the derivative to go back to 0 at around $i=120$, or about 4 months after January 22, which puts us at around the end of April. Once the derivative is back at zero there will be no new cases and the virus will have stopped spreading. But a crude prediction such as that one does not account for skew, since chances are that the graph will be right skewed, since that is how logistic graphs are. Accounting for this we can expect the curve to flatten out a bit later than the end of April. 
+            The derivative is initially approximately proportion to the number of cases, which is seen by looking at the first and third graphs. But then the derivative starts to level off as expected by logistic growth. The derivative is starting to decrease implying a critical point. Now if we assume that the graph will continue to fall in this manner we can expect the derivative to go back to 0 at around $i=120$, or about 4 months after January 22, which puts us at around the end of May. Once the derivative is back at zero there will be no new cases and the virus will have stopped spreading. But a crude prediction such as that one does not account for skew, since chances are that the graph will be right skewed, since that is how logistic graphs are. Accounting for this we can expect the curve to flatten out a bit later than the end of May. 
             \newline
             \indent Another option is that we can try to use an initial subset of the data to try to estimate the proportionality constant $c$ by
             \begin{equation}
@@ -206,51 +206,83 @@
         \label{sec:country}
             To do an analysis of the countries, I will be using a "dashboard" with a bunch of graphs that each convey different information. Many of the graphs are talked about in previous sections talking about the global data. But now we will focus in on other regions (different values for $X$).
             \newline\indent
-            Many of the observations I make will be in relation to the global dashboard. One of the difference that apply to all countries is that the graphs are scaled down from the global scale, but since we are analyzing trends, the amplitude does not matter too much.
+            Many of the observations I make will be in relation to the global dashboard since I have already done an in depth analysis of the global data. One of the difference that apply to all countries is that the graphs are scaled down from the global scale, but since we are analyzing trends, the amplitude does not matter too much. Another observation that applies to all the countries is that the data is noisier than on the global scale since there is less data.
             \begin{center}
-                \includegraphics[width=10cm]{plots/global/analyze.png}
+                \includegraphics[width=\textwidth]{plots/global/analyze.png}
             \end{center}
             \subsubsection{United States}
                 \begin{center}
                     \includegraphics[width=\textwidth]{plots/united_states/analyze.png}
                 \end{center}
+                The trends that the United States graphs are following are similar to those of the global scale, except they are time shifted forward. This is a result of COVID-19 spreading to the United States later than it the average country. Up until around $i = 40$, the data is either near $0$ or does not follow any clear pattern. This is because the number of cases in the United States before that point was near 0. 
+                \newline\indent
+                Also, the logarithmic graph has only recently started to flatten out, meaning that the United States has been experiencing exponential growth of the coronavirus until recently. The is likely due to the late start in taking action against the virus. Another point is that the curves of the United States are flattening at around the same time as the global curves. So, since COVID-19 hit the United States pretty late, this shows that the United States is doing better than the globe as a whole.
             \subsubsection{China}
                 \begin{center}
                     \includegraphics[width=\textwidth]{plots/china/analyze.png}
                 \end{center}
+                China's graphs are shifting backwards in time in relation to the global graphs, a result of the fact the virus started in China. Looking at the first graph we see that the difference between current cases and (death + recovered), or $N^{China}_i - (D^{China}_i + R^{China}_i)$, is approaching 0. That difference is the number of non-dealt with cases. China is the ideal model for logistic growth since we have data on the tail end of the growth. The growth ratio $GR^{China}_i$ and growth rate $G^{China}_i$ have both converged to 1, as seen by the graphs. Also, the graph of the cases follows a logistic growth curve. This flattening of the curve shows that China's strict policies are working in stopping the spread of the virus.
             \subsubsection{Italy}
                 \begin{center}
                     \includegraphics[width=\textwidth]{plots/italy/analyze.png}
                 \end{center}
+                Italy's graphs are time-shifted forward by about 10 less than the US graphs. Taking a look at the logarithmic graph, it is almost imediately flattening. This is unlike the previous couple countries, in which there was a longer time where the logarithmic graph was near linear. This correlated to Italy being well prepared for the virus and taking proper action against it.
             \subsubsection{Spain}
                 \begin{center}
                     \includegraphics[width=\textwidth]{plots/spain/analyze.png}
                 \end{center}
+                The time shift of Spain is similar to that of the United States, but the behavior of the graphs are similar to Italy. This shows that the difference between United States and Italy or Spain was not due to the ten day difference, but in the action against coronavirus.
             \subsubsection{India}
                 \begin{center}
                     \includegraphics[width=\textwidth]{plots/india/analyze.png}
                 \end{center}
+                While India's graph of the cases may look similar to the graphs of the other countries, they are very different. This shows the importance of looking at these different transforms of the data (log, derivative, growth rate, ratios, etc.).
+                \newline\indent
+                India's data is a prime example for exponential growth, which can be seen by taking a look at their logarithmic graph. This graph is almost perfectly linear, with only a slight curve at the very end. India's time shift is similar to that of the United States and Spain, so that it not the reason for them still being in the exponential portion of the logarithmic curve. India's action against the virus is not working to flatten the curve. Looking at the graph of the derivative, we see that it is proportional to the graph of the cases, as expected for exponential growth. 
+                \newline\indent
+                The growth ratio of India is staying approximately constant at around $1.15$. In a similar manner, the growth rate is not going down. The polyfit curve for $dG^{India}_i/di$ is the opposite of that of the other countries. While this curve does not model $dG^{India}_i/di$ that well, the fact that it is mostly postive indicated that the growth rate is not decreasing enough.
             \subsubsection{France}
                 \begin{center}
                     \includegraphics[width=\textwidth]{plots/france/analyze.png}
                 \end{center}
+                The data for France is very similar to that of the United States. France is time-shifted forward by about 10 less that the United States, making their graphs seem a bit better, but in this case it is very similar to the patterns of the United States.
+            \subsubsection{Comparing Amplitudes}
+                Most of the analysis I have done up to this point has been about looking at trends in the data but now I will take a look at the amplitudes by estimating the number of cases around $i = 80$ by the graphs for each country.
+                \begin{center}
+                    \begin{tabular}{||c c||}
+                        Global: & 2.5e6 \\
+                        US: & 800,000 \\
+                        Spain: & 200,000 \\
+                        Italy: & 175,000 \\
+                        France: & 160,000 \\
+                        China: & 80,000 \\
+                        India: & 20,000 \\
+                    \end{tabular}
+                \end{center}
+                where I have sorted it from greatest to least. By amplitudes it seems that India is doing very well, but from our earlier analysis we know that this may not be true. It is important to take into account both of these factors before making a conclusion.
         \subsection{Auto Analysis}
-            \label{sec:auto}
+        \label{sec:auto}
             TODO: Code the auto analysis stuff
     \section{Modelling}
         \subsection{Problems with Polynomial (Polyfit) Models}
         \label{sec:problems}
-        \subsection{Gradient Descent}
         \subsection{Logistic Growth Model}
             \subsubsection{Using Gradient Descent}
                 TODO: fix the negative sign and redo entire thing
             \subsubsection{Transforming the features and then performing Linear Regression}
+                TODO: Code this (it should be quick)
         \subsection{Markov Chain Model}
             TODO: Code Markov Chain Model
         \subsection{RLC Circuit Model}
         \subsection{Neural Network}
             TODO: Code the neural network stuff
     \section{Conclusion}
+        \subsection{Country Ranking}
+            Spain Italy China France United States Global India
+        \subsection{Predictions}
+            Not be over before End of May/ Start of June
+            \newline
+            Max Cases from auto analysis:
     \section{The Code}
         \subsection{Libraries}
         \subsection{Project Structure}
