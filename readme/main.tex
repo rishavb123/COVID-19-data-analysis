@@ -363,47 +363,101 @@
             TODO: Code this (it should be quick)
         \subsection{Transfer Models}
         \subsection{Markov Chain Model}
-            Another model that can be made to represent the spread of COVID-19 is a markov chain model with a state vector:
-            \begin{equation}
-                \vec{S}^X_i = \begin{bmatrix}
-                    n \\
-                    d \\
-                    e \\
-                    p
-                \end{bmatrix} = \begin{bmatrix}
-                    N^X_i - D^X_i - R^X_i\\
-                    D^X_i \\
-                    R^X_i \\
-                    P^X - N^X_i
-                \end{bmatrix}
-            \end{equation}
-            This vector contains the current number of cases (this time not including the ones resulting in death or recovery), the number of deaths, the number of recovered cases, and the rest of the population. Also, let $P^X$ be the total population of the region $X$.
-            \newline\indent
-            To complete a Markov Chain Model we need to create a transition matrix $T$, so that when it is multiplied by the state vector at $i$, we get the state vector at $i + 1$. Or mathematically,
-            \begin{equation}
-                \vec{S}^X_{i + 1} = T\vec{S}^X_i
-            \end{equation}
-            Now to fill in the entries of $T$, we apply our knowledge of logistic growth and common sense. The change in number of deaths and number of recoveries are only based on the number of current cases. And for our purposes assume that someone who has recovered or died can not get corona again. This gives us the second and third rows of the matrix. We also know that anyone in $p$ cannot go directly to $d$ or $e$ (assuming no vaccines and no other causes of death). So the number of new cases is equal to the number that the untouched population decreases.
-            \newline\indent
-            Combining everything we get
-            \begin{equation}
-                T = \begin{bmatrix}
-                    r & 0 & 0 & s(i) \\
-                    r_d & 1 & 0 & 0 \\
-                    r_r & 0 & 1 & 0 \\
-                    -(r - 1) & 0 & 0 & 0
-                \end{bmatrix}
-            \end{equation}
-            where
-            \begin{itemize}
-                \item $r$ is the rate of increase (of cases)
-                \item $r_d$ is the death rate
-                \item $r_r$ is the recovery rate
-                \item $s(i)$ is some unknown function holding information on the coronavirus growth's dependence on the infectable population
-            \end{itemize}
-            We know $s$ cannot be constant by the difference equation
-            $$\Delta N^X = c(1 - \dfrac{N^X_i}{N^X})N^X_i$$
-            where $N^X$ is some proportion of the population $P^X$. Clearly there is not a linear relationship between these quantitiies, but there is a relationship nonetheless. 
+            \subsubsection{Formulating the State Vector and Transition Matrix}
+                Another model that can be made to represent the spread of COVID-19 is a markov chain model with a state vector:
+                \begin{equation}
+                    \vec{S}^X_i = \begin{bmatrix}
+                        n \\
+                        d \\
+                        e \\
+                        p
+                    \end{bmatrix} = \begin{bmatrix}
+                        N^X_i - D^X_i - R^X_i\\
+                        D^X_i \\
+                        R^X_i \\
+                        P^X - N^X_i
+                    \end{bmatrix}
+                \end{equation}
+                This vector contains the current number of cases (this time not including the ones resulting in death or recovery), the number of deaths, the number of recovered cases, and the rest of the population. Also, let $P^X$ be the total population of the region $X$.
+                \newline\indent
+                To complete a Markov Chain Model we need to create a transition matrix $T$, so that when it is multiplied by the state vector at $i$, we get the state vector at $i + 1$. Or mathematically,
+                \begin{equation}
+                    \vec{S}^X_{i + 1} = T\vec{S}^X_i
+                \end{equation}
+                Now to fill in the entries of $T$, we apply our knowledge of logistic growth and common sense. The change in number of deaths and number of recoveries are only based on the number of current cases. And for our purposes assume that someone who has recovered or died can not get corona again. This gives us the second and third rows of the matrix. We also know that anyone in $p$ cannot go directly to $d$ or $e$ (assuming no vaccines and no other causes of death). So the number of new cases is equal to the number that the untouched population decreases.
+                \newline\indent
+                Combining everything we get
+                \begin{equation}
+                    T = \begin{bmatrix}
+                        r & 0 & 0 & s(i) \\
+                        r_d & 1 & 0 & 0 \\
+                        r_r & 0 & 1 & 0 \\
+                        -(r - 1) & 0 & 0 & 1
+                    \end{bmatrix}
+                \end{equation}
+                where
+                \begin{itemize}
+                    \item $r$ is the rate of increase (of cases)
+                    \item $r_d$ is the death rate
+                    \item $r_r$ is the recovery rate
+                    \item $s(i)$ is some unknown function holding information on the coronavirus growth's dependence on the infectable population
+                \end{itemize}
+                We know $s$ cannot be constant by the difference equation
+                $$\Delta N^X = c(1 - \dfrac{N^X_i}{N^X})N^X_i$$
+                where $N^X$ is some proportion of the population $P^X$. Clearly there is not a linear relationship between these quantitiies, but there is a relationship nonetheless. 
+                \newline\indent
+                A model like this would work better on a smaller region $X$ since there is a more constant contact throughout everyone and COVID-19 closer to being uniformly distributed across a smaller region. Our model does not account for a non-uniform spread of COVID-19.
+            \subsubsection{Finding these parameters}
+                Finding these parameters for a certain transition $\vec{S}_i \rightarrow \vec{S}_{i + 1}$ is given by expanding the matrix multiplication and the reformating the equation into a form that linear algebra can solve.
+                \newline\indent
+                For this specific transition, call it $t_i$, we can treat $s(i)$ as constant since this value of $s(i) = s_i$ does not need to hold true for any other transitions. We start with
+                $$
+                    \begin{bmatrix}
+                        n' \\
+                        d' \\
+                        e' \\
+                        p'
+                    \end{bmatrix} = \begin{bmatrix}
+                        r & 0 & 0 & s_i \\
+                        r_d & 1 & 0 & 0 \\
+                        r_r & 0 & 1 & 0 \\
+                        -(r - 1) & 0 & 0 & 1
+                    \end{bmatrix}\begin{bmatrix}
+                        n \\
+                        d \\
+                        e \\
+                        p
+                    \end{bmatrix}
+                $$
+                where we are given all the values in the two states but need to find the parameters of the matrix $r, r_d, r_r, s_i$. To do this we want to restructure the equation so we have:
+                $$
+                    A\begin{bmatrix}
+                        r \\
+                        r_d \\
+                        r_r \\
+                        s_i
+                    \end{bmatrix} = \vec{b}
+                $$
+                which we can solving using \lstinline{np.solve}. After expanding the matrix multiplication into 4 different linear equations and rearranging and repackaging back into matricies, we get
+                \begin{equation}
+                    \begin{bmatrix}
+                        n & 0 & 0 & p \\
+                        0 & n & 0 & 0 \\
+                        0 & 0 & n & 0 \\
+                        n & 0 & 0 & 0
+                    \end{bmatrix}\begin{bmatrix}
+                        r \\
+                        r_d \\
+                        r_r \\
+                        s_i
+                    \end{bmatrix} = \begin{bmatrix}
+                        n' \\
+                        d' - d \\
+                        e' - e \\
+                        n + p - p'
+                    \end{bmatrix}
+                \end{equation}
+                which is of the form we would like. Now, we can apply a similar method as what we did before with the logistic model analysis, by calculating the values for $r, r_d, r_r, s_i$ for every transition $t_i$. Then for the constnats $r, r_d, r_r$ we average all the values and for $s_i$ we use \lstinline{np.polyfit} to fit a curve to $s(i)$.
         \subsection{Circuit Model}
             \subsubsection{RC Circuit}
                 A theoretical model of the COVID-19 data can be made using a circuit. The first thing to do to create a circuit like this is to look at our goal. We want a circuit so that we can measure some quantitiy and we have the following graphs:
