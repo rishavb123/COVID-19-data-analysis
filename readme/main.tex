@@ -363,7 +363,47 @@
             TODO: Code this (it should be quick)
         \subsection{Transfer Models}
         \subsection{Markov Chain Model}
-            TODO: Code Markov Chain Model
+            Another model that can be made to represent the spread of COVID-19 is a markov chain model with a state vector:
+            \begin{equation}
+                \vec{S}^X_i = \begin{bmatrix}
+                    n \\
+                    d \\
+                    e \\
+                    p
+                \end{bmatrix} = \begin{bmatrix}
+                    N^X_i - D^X_i - R^X_i\\
+                    D^X_i \\
+                    R^X_i \\
+                    P^X - N^X_i
+                \end{bmatrix}
+            \end{equation}
+            This vector contains the current number of cases (this time not including the ones resulting in death or recovery), the number of deaths, the number of recovered cases, and the rest of the population. Also, let $P^X$ be the total population of the region $X$.
+            \newline\indent
+            To complete a Markov Chain Model we need to create a transition matrix $T$, so that when it is multiplied by the state vector at $i$, we get the state vector at $i + 1$. Or mathematically,
+            \begin{equation}
+                \vec{S}^X_{i + 1} = T\vec{S}^X_i
+            \end{equation}
+            Now to fill in the entries of $T$, we apply our knowledge of logistic growth and common sense. The change in number of deaths and number of recoveries are only based on the number of current cases. And for our purposes assume that someone who has recovered or died can not get corona again. This gives us the second and third rows of the matrix. We also know that anyone in $p$ cannot go directly to $d$ or $e$ (assuming no vaccines and no other causes of death). So the number of new cases is equal to the number that the untouched population decreases.
+            \newline\indent
+            Combining everything we get
+            \begin{equation}
+                T = \begin{bmatrix}
+                    r & 0 & 0 & s(i) \\
+                    r_d & 1 & 0 & 0 \\
+                    r_r & 0 & 1 & 0 \\
+                    -(r - 1) & 0 & 0 & 0
+                \end{bmatrix}
+            \end{equation}
+            where
+            \begin{itemize}
+                \item $r$ is the rate of increase (of cases)
+                \item $r_d$ is the death rate
+                \item $r_r$ is the recovery rate
+                \item $s(i)$ is some unknown function holding information on the coronavirus growth's dependence on the infectable population
+            \end{itemize}
+            We know $s$ cannot be constant by the difference equation
+            $$\Delta N^X = c(1 - \dfrac{N^X_i}{N^X})N^X_i$$
+            where $N^X$ is some proportion of the population $P^X$. Clearly there is not a linear relationship between these quantitiies, but there is a relationship nonetheless. 
         \subsection{Circuit Model}
             \subsubsection{RC Circuit}
                 A theoretical model of the COVID-19 data can be made using a circuit. The first thing to do to create a circuit like this is to look at our goal. We want a circuit so that we can measure some quantitiy and we have the following graphs:
@@ -460,7 +500,14 @@
         \subsection{Neural Network}
             TODO: Code the neural network stuff
     \section{Conclusion}
+        TODO: Get back to once I finish writing the rest
         \subsection{Country Ranking}
+            According to trends using (R-squared statistic):
+            \newline
+                China Italy Spain Global France United States India
+            \newline
+            But this does not only have to do with the action taken since any time shifts in the data it not accounted for. Manually looking at the data to see which countries action was most effective, here is a new ranking:
+            \newline
             Spain Italy China France United States Global India
         \subsection{Predictions}
             Not be over before End of May/ Start of June
