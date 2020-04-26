@@ -364,7 +364,99 @@
         \subsection{Transfer Models}
         \subsection{Markov Chain Model}
             TODO: Code Markov Chain Model
-        \subsection{RLC Circuit Model}
+        \subsection{Circuit Model}
+            \subsubsection{RC Circuit}
+                A theoretical model of the COVID-19 data can be made using a circuit. The first thing to do to create a circuit like this is to look at our goal. We want a circuit so that we can measure some quantitiy and we have the following graphs:
+                \begin{center}
+                    \includegraphics[width=10cm]{drawings/model_goal.png}
+                \end{center}
+                The nature of the data as $i \rightarrow \infty$ is similar to that of a charging RC circuit. So I will use that as a base point.
+                \begin{center}
+                    \includegraphics[width=10cm]{drawings/RC.png}
+                \end{center}
+                The asymptotic behavior of this circuit matches that of the logistic growth apparant in the coronavirus data, but the beginning of the graphs are very different. The derivative of the RC circuit graph increases too suddenly. In other words, $I = \dfrac{dQ}{dt}$ increases too suddenly, or $\dfrac{dI}{dt}$ is too large. A way we can fix this is to "penalize" changes in current, which is exactly what an inductor does.
+            \subsubsection{LRC Circuit}
+                So now we have an LRC circuit, which will model the data a lot better.
+                \begin{center}
+                    \includegraphics[width=10cm]{drawings/LRC.png}
+                \end{center}
+                While this model already follows the logistic pattern, just like the COVID-19 data, it can be made better since the it does not spend enough time in the exponential portion of logistic growth.
+            \subsubsection{LRC Circuit with Moving Target}
+                The way I chose to handle this is to modify the circuit so that it isn't approaching a fixed value. Instead it will approach a time-dependent value that approaches a fixed value from below. The effect of this is that it will slow the growth to the charge in the capacitor, causing the growth to spend a longer time in the exponential portion. But as $t \rightarrow \infty$ nothing will change since what the charge is approaching is arbitrary close to what it would have approached otherwise.
+                \newline\indent
+                This behavior is similar to the ideas of all convergent sequences being Cauchy, expect for instead of having us sample $a_m$ and $a_n$ from the same convergent sequence, we are sampling them from different sequences that both approach the same target.
+                \newline\indent
+                Overall, the effect it that is stretchs out the exponential portion without stretching out the later portion of the growth. We can change what the charge is approaching by changing the voltage source according to the equation
+                \begin{equation}
+                    V(t) =  \mu (1 - \exp(-t/\tau))
+                \end{equation}
+                Using this, I was able to generate a curve that models logistic growth very well:
+                \begin{center}
+                    \includegraphics[width=5cm]{plots/lrc/Charge.png}
+                    \includegraphics[width=5cm]{plots/lrc/Current.png}
+                \end{center}
+                To solve this circuit, I used a numeric differential equation solving method called the Runge-Kutta method. To do this, I created a state vector consisting of the charge in the capacitor and the current through the circuit, and then created a first-order vector differential equation:
+                \begin{equation}
+                    f(\begin{bmatrix}
+                        Q \\
+                        I
+                    \end{bmatrix}, t) = 
+                    \dfrac{d\begin{bmatrix}
+                        Q \\
+                        I
+                    \end{bmatrix}}{dt} = \begin{bmatrix}
+                        0 & 1 \\
+                        -\dfrac{1}{LC} & -\dfrac{R}{L}
+                    \end{bmatrix}\begin{bmatrix}
+                        Q \\
+                        I
+                    \end{bmatrix} + \begin{bmatrix}
+                        0 \\
+                        V(t)
+                    \end{bmatrix}
+                \end{equation} 
+                This equation was derived from Kirchhoff's Voltage Law. After that I just apply the Runge-Kutta method as follows
+                \begin{lstlisting}
+                    ts = np.arange(start, end, h)
+                    Qs = []
+                    Is = []
+
+                    x = np.array([Q0, I0], float)
+
+                    for t in ts:
+                        Qs.append(x[0])
+                        Is.append(x[1])
+
+                        k1 = h * f(x, t)
+                        k2 = h * f(x + 0.5 * k1, t + 0.5 * h)
+                        k3 = h * f(x + 0.5 * k2, t + 0.5 * h)
+                        k4 = h * f(x + k3, t + h)
+                        x += (k1 + 2 * k2 + 2 * k3 + k4) / 6
+                \end{lstlisting}
+            \subsubsection{Building the Circuit}
+                Building the basic LRC circuit is quite simple, but implementing the growth in the voltage source becomes a little more challenging. The way to create this effect to use a Voltage Controlled Voltage Source (VCVS) controlled by an RC circuit.
+                \newline\indent
+                To break it down, the first thing to notice is that the growth of the voltage function $V(t)$ is exactly the same as that of the charge in or voltage across a charging capacitor in an RC circuit (with $\tau = RC$). So now we just have to use the same voltage generated by the capacitor in our battery without interfering with the RC circuit. A VSCS can read the voltage accross something and then reproduce a voltage proportion to it as a seperate voltage source. 
+                \newline\indent
+                Combining everything together, our circuit becomes
+                \begin{center}
+                    \includegraphics[width=10cm]{drawings/final_circuit.png}
+                \end{center}
+                which will produce the graphs above by measuring the voltmeter (which is proportional the the charge) and ammeter and closing the swithc $S$ at $t = t_0$. There are a lot of parameters to a setup like this:
+                $$[V_b, t_0, R_1, C_1, Q^1_0, I^1_0, \mu, L, R_2, C_2, I^2_0, Q^2_0]$$ 
+                All these parameters will have the be tweaked to match the data you are trying to model.
+            \subsubsection{Possible Improvements}
+                Another idea for a possible time-dependent voltage function $V(t)$ is a function the is similar to a logistic growth function as well. Such a voltage would slow down the exponential part even more, while still leaving the tail end of the function nearly untouched. The longer the exponential side of the voltage function is the longer our new logistic function will be.
+                \newline\indent
+                The way to create a circuit like this is to chain together a similar setup we had for the LRC circuit multiple time. First let's define a new circuit element $L_i$ as
+                \begin{center}
+                    \includegraphics[width=10cm]{drawings/Li.png}
+                \end{center}
+                and then we chain it together $n$ times, as follows
+                \begin{center}
+                    \includegraphics[width=10cm]{drawings/chain.png}
+                \end{center}
+                This would create a lot of parameters, so a technique that can be used in for this (and even the simplier circuit models), is simulating the circuit and performing gradient descent to minimize a loss function. Then you are essentially training the circuit to model the data.
         \subsection{Neural Network}
             TODO: Code the neural network stuff
     \section{Conclusion}
