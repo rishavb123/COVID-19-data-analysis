@@ -260,17 +260,95 @@
                     \end{tabular}
                 \end{center}
                 where I have sorted it from greatest to least. By amplitudes it seems that India is doing very well, but from our earlier analysis we know that this may not be true. It is important to take into account both of these factors before making a conclusion.
+                \newline\indent
+                Another thing to consider while looking at amplitudes is the validity of them. Some countries may not report all of their cases, or they may not even know about them. For this reason, more developed countries and countries with a greater involvement with international health organizations will have larger numbers due to better recording of data. However, if we assume that the ratio of cases reported to true cases stays approximately constant as time passes, we can still look at the trends since we are ignoring amplitudes anyways.
         \subsection{Auto Analysis}
         \label{sec:auto}
-            TODO: Code the auto analysis stuff
+            This section will be apply using python to analyze the graphs we have created and use the data to find some intrinsic values and make predictions. These methods will work for any valid value of $X$, but I am going to mainly use the global data. 
+            \subsubsection{Finding the Parameters for a Differential Equation}
+                The first thing I will do is assume the form of the growth to be logistic. This mean it will follow the differential equation
+                \begin{equation}
+                    \dfrac{dN^X_i}{di} = c\big(1 - \dfrac{N^X_i}{N^X}\big)N^X_i
+                \end{equation}
+                Just as a reminder, $N^X$ is the final number of cases in region $X$, or the "carrying capacity" of the spread. Also,
+                $$(N^X_i) \rightarrow N^X$$
+                \indent
+                The first step is to split the data into two sections: one where $N^X_i << N^X$ and the rest. Or mathematically,
+                \begin{equation}
+                    (N^X_i)_1 = \{N^X_i \in (N^X_i): N^X_i << N^X\} \qquad (N^X_i)_2 = (N^X_i) \backslash (N^X_i)_1
+                \end{equation}
+                The reason for this splitting is that in $(N^X_i)$, we can ignore the factor $(1 - N^X_i/N^X)$ since $N^X_i << N^X$ implies $N^X_i / N^X << 1$ so $(1 - N^X_i/N^X) \approx 1$. This makes our derivative 
+                $$\dfrac{dN^X_i}{di} \approx cN^X_i \qquad N^X_i \in (N^X_i)_1$$
+                approximately follows the differential equaiton for exponential growth in $(N^X_i)_1$. Now, there is only one parameter left in this model for the derivative. In theory, I could use gradient descent to find it, but a much simplier way is to just solve for it $\forall N^X_i \in (N^X_i)_1$ and average the results:
+                $$c \approx \dfrac{dN^X_i/di}{N^X_i}$$
+                Now, taking the average, I set $c$ to 
+                \begin{equation}
+                    c = \dfrac{1}{m}\sum_{N^X_i \in (N^X_i)_1}\dfrac{dN^X_i/di}{N^X_i}
+                \end{equation}
+                where $m$ is the length of $(N^X_i)_1$.
+                \newline\indent
+                Now moving to $\big(\dfrac{dN^X_i/di}{N^X_i}\big)_2$, where we have a logistic growth model again, but now we have $c$ and only need to solve for $N^X$ and then apply the same technique as we did on $c$.
+                \newline\indent
+                Though some simple algebra
+                $$N^X = \big(1 - \dfrac{1}{cN^X_i}\big)^{-1}N^X_i$$
+                and taking the mean, I can set
+                \begin{equation}
+                    N^X = \dfrac{1}{m}\sum_{N^X_i \in (N^X_i)_2}\big(1 - \dfrac{1}{cN^X_i}\big)^{-1}N^X_i
+                \end{equation}
+                Now both the scaling factor $c$ and the limit/max value $N^X = \lim_{i \rightarrow \infty} N^X_i$ are both known
+                \newline
+                \textbf{Implementation Details}
+                \newline
+                To implement this, you must first look at the graphs and choose a place to split your data into the two subsets.
+                \begin{center}
+                    \includegraphics[width=\textwidth]{plots/global/de_parameters/combined.png}
+                \end{center}
+                Eying out the two graphs ($N^X_i$ and $dN^X_i/di$), I choose to split at $i = 60$. I did this by defining a variable \lstinline{split_point = 60} and then splitting.
+                \newline\indent
+                A model like this requires a more complete dataset since it is using a pretty basic algorithm to estimate the values for $c$ and $N^X$. Hence, it works pretty will on the China dataset since China's dataset consists of almost the entire logistic curve. However as more data is collected for other countries and as time passes, models like this can be created for other countries as well.
+                \newline\indent
+                China's output:
+                \begin{lstlisting}
+                    Finding Differential Equation Parameters - China
+                    Enter the split point: 10
+                    c: 0.4591556247467866
+                    N^X: 83771.24238239802
+                \end{lstlisting}
+            \subsubsection{Evaluating R-Squared on the Logarithmic Graph}
+                Here I will use python to measure how linear the logarithmic of a few countries. The more linear this graph is, the more exponential the number of cases is, implying the action taken against COVID-19 has not been effective.
+                \newline\indent
+                We can measure how well a linear model fits the logarithmic graph by measure the statistic R-squared, defined by
+                \begin{equation}
+                    R^2 = \big(\dfrac{||\vec{y} - \hat{y}||}{||\vec{y} - \bar{y}||}\big)^2
+                \end{equation}
+                where in this case $y$ is the $\ln N^X_i$. Also, vector - scalar is defined by elementwise scalar substraction. 
+                \newline\indent
+                As $R^2$ approaches 1, the fit of the linear model if worse, which is a good thing since that means the curve is flattening out. This is a way to numerically give each country a "rating" on how well they are flattening out the curve.
+                \newline\indent
+                One important implementation detail is the I only created the linear regression model on the data collected after some growth began. This is to get the best representation of the data's growth rather than including extra data points that have no significance. I did this by only including points with $N^X_i > 10$.                
+                \newline
+                \begin{center}
+                    \textbf{Results}
+                    \begin{tabular}{||c c||}
+                        China: & 0.5470569248885822 \\
+                        Italy: & 0.17500288400296796 \\
+                        Spain: & 0.14825334735656834 \\
+                        Global: & 0.08059000856842549 \\
+                        France: & 0.06241867519925645 \\
+                        United States: & 0.05848466049484314 \\
+                        India: & 0.00964424128015847
+                    \end{tabular}
+                \end{center}
     \section{Modelling}
         \subsection{Problems with Polynomial (Polyfit) Models}
         \label{sec:problems}
         \subsection{Logistic Growth Model}
+            \subsubsection{Solving the Differential Equation}
             \subsubsection{Using Gradient Descent}
-                TODO: fix the negative sign and redo entire thing
+            TODO: fix the negative sign and redo entire thing
             \subsubsection{Transforming Features and Linear Regression}
-                TODO: Code this (it should be quick)
+            TODO: Code this (it should be quick)
+        \subsection{Transfer Models}
         \subsection{Markov Chain Model}
             TODO: Code Markov Chain Model
         \subsection{RLC Circuit Model}
