@@ -169,6 +169,7 @@
             \end{equation}
             where $(1 - N^X_i/N^X) \approx 1$ (in the initial subset), so $\dfrac{dN^X_i}{di} \approx cN^X_i$. After finding $c$, we can use the graph for the derivative to estimate $N^X$, assuming a perfectly logistic model. I will actually implement this in \hyperref[sec:auto]{Section 2.6}.
         \subsection{Fitting Polynomials to Subsets of the Data}
+        \label{sec:polys}
             The numpy module has a \lstinline{polyfit} method that can take a bunch of data and fit a polynomial of a given degree to it. In theory, this can be used to create a model for the COVID-19 data, but there are many problems with this\footnote{I go further in depth into these problems in \hyperref[sec:problems]{Section 3.1}}. But we can still use a technique like this to gain insights into our data.
             \subsubsection{Finding the Best Degree for Polyfit}
                 Just like any other model, we can measure how well the generated polynomial fits the data using some sort of loss function. I used mean squared error, defined by
@@ -351,6 +352,9 @@
     \section{Modelling}
         \subsection{Problems with Polynomial (Polyfit) Models}
         \label{sec:problems}
+            I first considered the idea of a polynomial model back in \hyperref[sec:polys]{Section 2.4}, but as I added more and more data, the number of degrees required kept increasing, which means that a polynomial model will to generalize well to anything outside of the domain it was trained on.
+            \newline\indent
+            So using \lstinline{np.polyfit} to create an model that will generalize well outside the dataset without just using a large number of degrees\footnote{Using too many degrees is also a problem since the training time will become longer for the same result. We will be losing out on both time and space, the two ways to measure efficiency.} is not possible.
         \subsection{Logistic Growth Model}
             \subsubsection{Solving the Differential Equation}
             \subsubsection{Using Gradient Descent}
