@@ -458,6 +458,8 @@
                     \end{bmatrix}
                 \end{equation}
                 which is of the form we would like. Now, we can apply a similar method as what we did before with the logistic model analysis, by calculating the values for $r, r_d, r_r, s_i$ for every transition $t_i$. Then for the constnats $r, r_d, r_r$ we average all the values and for $s_i$ we use \lstinline{np.polyfit} to fit a curve to $s(i)$.
+                \newline\indent
+                Since we would like to apply this model on a smaller region, I will choose do it by counties in the United States, but the John Hopkins dataset does not include any recovery cases for the United States. So this model will not be good at predicting the recovery rate, since I will just take both $e'$ and $e$ to be $0 \forall t_i$
         \subsection{Circuit Model}
             \subsubsection{RC Circuit}
                 A theoretical model of the COVID-19 data can be made using a circuit. The first thing to do to create a circuit like this is to look at our goal. We want a circuit so that we can measure some quantitiy and we have the following graphs:
