@@ -1,44 +1,46 @@
-import matplotlib.pyplot as plt
-import csv
+import sys
+
 import numpy as np
+import matplotlib.pyplot as plt
 
-counties = ['Maricopa']
-cases = {}
-deaths = {}
-populations = {}
-
-with open('./data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv') as f:
-    reader = csv.reader(f)
-    fields = next(reader)
-    for row in reader:
-        county = row[fields.index("Admin2")]
-        cases[county] = [int(s) for s in row[fields.index("1/22/20"):]]
-
-with open('./data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv') as f:
-    reader = csv.reader(f)
-    fields = next(reader)
-    for row in reader:
-        county = row[fields.index("Admin2")]
-        deaths[county] = [int(s) for s in row[fields.index("1/22/20"):]]
-        populations[county] = int(row[fields.index("Population")])
+from data import get_structured_data
+from rb_math.transforms import *
 
 
-for county in counties:
+# countries = [s.title() for s in sys.argv[1:]]
+# if len(countries) == 0 or countries[0] == "Default":
+#     countries = countries = ["Global", "United States", "Spain", "Italy", "France", "China", "India"]
+# elif countries[0] == "Test":
+#     countries = ["Global", "United States", "Spain"]
+# elif countries[0] == "Input":
+#     countries = [input("Enter a country:") for i in range(int(input("How many countries would you like to view:")))]
+
+countries = ['China', 'India', 'United States']
+populations = {
+    'China': 1.393e9,
+    'India': 1.353e9,
+    'United States': 328.2e6
+}
+
+data = get_structured_data()
+for country in countries:
+    cases = data[country]["cases"]
+    deaths = data[country]["death"]
+    plt.figure()
     rs = []
     r_ds = []
     r_rs = []
     s_is = []
-    plt.figure()
-    for i in range(len(cases[county]) - 1):
-        n_d = deaths[county][i + 1]
+    for i in range(len(cases) - 1):
+        n_d = deaths[i + 1]
         n_e = 0
-        n_n = cases[county][i + 1] - n_d - n_e
-        n_p = populations[county] - n_n
+        n_n = cases[i + 1] - n_d - n_e
+        n_p = populations[country] - n_n
 
-        d = deaths[county][i]
+        d = deaths[i]
         e = 0
-        n = cases[county][i] - d - e
-        p = populations[county] - n
+        n = cases[i] - d - e
+        p = populations[country] - n
 
         A = np.array([
             [n, 0, 0, p],
@@ -80,23 +82,23 @@ for county in counties:
 
     print("r:", r, "r_d:", r_d, "r_r:", r_r)
     
-    plt.plot(cases[county], label="Cases")
+    plt.plot(cases, label="Cases")
     pred = []
     counter = 0
-    for i in range(0, int(len(cases[county]) * 1)):
-        if i >= len(cases[county]) or cases[county][i] > 0:
+    for i in range(0, int(len(cases) * 1)):
+        if i >= len(cases) or cases[i] > 0:
             if len(pred) == 0:
-                d = deaths[county][i]
+                d = deaths[i]
                 e = 0
-                n = cases[county][i] - d - e
-                p = populations[county] - n
+                n = cases[i] - d - e
+                p = populations[country] - n
                 pred.append(np.array([n, d, e, p]))
             else:
                 pred.append(np.matmul(T(i), pred[-1]))
         else: counter += 1
     plt.plot(list(range(counter, len(pred) + counter)), [t[0] for t in pred], label="Markov Chain")
     plt.figure()
-    plt.plot(deaths[county], label="Deaths")
+    plt.plot(deaths, label="Deaths")
     plt.plot(list(range(counter, len(pred) + counter)), [t[1] for t in pred], label="Markov Chain")
-plt.legend()
-plt.show()
+    plt.legend()
+    plt.show()

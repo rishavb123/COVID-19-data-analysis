@@ -457,9 +457,31 @@
                         n + p - p'
                     \end{bmatrix}
                 \end{equation}
-                which is of the form we would like. Now, we can apply a similar method as what we did before with the logistic model analysis, by calculating the values for $r, r_d, r_r, s_i$ for every transition $t_i$. Then for the constnats $r, r_d, r_r$ we average all the values and for $s_i$ we use \lstinline{np.polyfit} to fit a curve to $s(i)$.
+                which is of the form we would like. Since this matrix $A$ is singular, we cannot use \lstinline{np.solve} to solve the equation, but since it is quite basic, I just solved it manually and implemented the code. Now, we can apply a similar method as what we did before with the logistic model analysis, by calculating the values for $r, r_d, r_r, s_i$ for every transition $t_i$. Then for the constnats $r, r_d, r_r$ we average all the values and for $s_i$ we use \lstinline{np.polyfit} to fit a curve to $s(i)$.
                 \newline\indent
                 Since we would like to apply this model on a smaller region, I will choose do it by counties in the United States, but the John Hopkins dataset does not include any recovery cases for the United States. So this model will not be good at predicting the recovery rate, since I will just take both $e'$ and $e$ to be $0 \forall t_i$
+                \newline\indent
+                The problem with this model is that it does not represent logistic growth too well because the new state values cannot be written as a linear combination of the original state values. On the other hand, exponential growth can be. We see that it is not modelling the populations effect very well by plotting the values for $s_i$. I will first try running it on the county "Maricopa" since it has the most data.
+                \begin{center}
+                    \includegraphics[width=10cm]{plots/markov/s_i.png}
+                \end{center}
+                As we can see most of the values are just 0 or an apparantly random value, hence no good polyfit curve could be created. We also see that the Markov model is clearly modelling exponential growth when viewing the two graphs (cases and deaths):
+                \begin{center}
+                    \includegraphics[width=10cm]{plots/markov/cases.png}
+                \end{center}
+                \begin{center}
+                    \includegraphics[width=10cm]{plots/markov/deaths.png}
+                \end{center}
+                The deaths are modelled pretty well since they are time-shifted from the cases and still follow near exponential growth. While this did not work as well as I hoped we can still gain information about some of the intrinsic values of the growth from this. Printing some of the intrinsic values, we get 
+                \newline
+                \begin{center}
+                    \lstinline{r: 1.110251893980582 r_d: 0.0014117880319499951 r_r: 0.0}
+                \end{center}
+                which tells us that everyday the number of cases is increasing by 11\%. It also gives us insight on the death rate $r_d$ of coronavirus in this county.
+                \newline\indent
+                A similar Markov model does work on larger regions such as countries for the reasons mentioned above and also they exhibit more properties of logistic growth, making it hard to model it with a markov chain.
+                \newline\indent
+                One way to handle this is to redefine the state vector with $n^2/p$ instead of $p$ since then we can use a linear combination to create $n, d, e$, but we cannot create a linear combination for $n^2/p$. But since this does not hold any phsyical significance and can be calculated from the other values of the state, we can just set that row to 0 and recalulate that value for every single state.
         \subsection{Circuit Model}
             \subsubsection{RC Circuit}
                 A theoretical model of the COVID-19 data can be made using a circuit. The first thing to do to create a circuit like this is to look at our goal. We want a circuit so that we can measure some quantitiy and we have the following graphs:
