@@ -457,7 +457,15 @@
                         n + p - p'
                     \end{bmatrix}
                 \end{equation}
-                which is of the form we would like. Since this matrix $A$ is singular, we cannot use \lstinline{np.solve} to solve the equation, but since it is quite basic, I just solved it manually and implemented the code. Now, we can apply a similar method as what we did before with the logistic model analysis, by calculating the values for $r, r_d, r_r, s_i$ for every transition $t_i$. Then for the constnats $r, r_d, r_r$ we average all the values and for $s_i$ we use \lstinline{np.polyfit} to fit a curve to $s(i)$.
+                which is of the form we would like. Since this matrix $A$ is singular, we cannot use \lstinline{np.solve} to solve the equation, but since it is quite basic, I just solved it manually and implemented the code. 
+                \begin{align}
+                    n' = rn + s_i * p \\
+                    d' = r_dn + d \\
+                    e' = r_rn + e \\
+                    p' = -(r - 1)n + p
+                \end{align}
+                \newline\indent
+                Now, we can apply a similar method as what we did before with the logistic model analysis, by calculating the values for $r, r_d, r_r, s_i$ for every transition $t_i$. Then for the constnats $r, r_d, r_r$ we average all the values and for $s_i$ we use \lstinline{np.polyfit} to fit a curve to $s(i)$.
                 \newline\indent
                 Since we would like to apply this model on a smaller region, I will choose do it by counties in the United States, but the John Hopkins dataset does not include any recovery cases for the United States. So this model will not be good at predicting the recovery rate, since I will just take both $e'$ and $e$ to be $0 \forall t_i$
                 \newline\indent
@@ -481,7 +489,9 @@
                 \newline\indent
                 A similar Markov model does work on larger regions such as countries for the reasons mentioned above and also they exhibit more properties of logistic growth, making it hard to model it with a markov chain.
                 \newline\indent
-                One way to handle this is to redefine the state vector with $n^2/p$ instead of $p$ since then we can use a linear combination to create $n, d, e$, but we cannot create a linear combination for $n^2/p$. But since this does not hold any phsyical significance and can be calculated from the other values of the state, we can just set that row to 0 and recalulate that value for every single state.
+                One way to handle this is to redefine the state vector with $n^2/p$ instead of $p$ since then we can use a linear combination to create $n, d, e$, but we cannot create a linear combination for $n^2/p$. But since this does not hold any phsyical significance and can be calculated from the other values of the state, we can just set that row to 0 and recalulate that value for every single state. With a state system like this $s(i)$ can now be made a constant $s$. 
+                \newline\indent
+                Since we cannot just solve the equations this time since we only have 3 equations with 4 variables, we will use a similar technique as be did in \hyperref[sec:auto]{Section 2.6}: first we assume that we are dealing with exponential growth ($s = 0$) for some initial subset of the data, and then once we have calculated $r$, we can move to the logistic portion and calculate $s$.
         \subsection{Circuit Model}
             \subsubsection{RC Circuit}
                 A theoretical model of the COVID-19 data can be made using a circuit. The first thing to do to create a circuit like this is to look at our goal. We want a circuit so that we can measure some quantitiy and we have the following graphs:
