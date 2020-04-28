@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import csv
 import numpy as np
 
+from rb_math.transforms import *
+
 counties = ['Maricopa']
 cases = {}
 deaths = {}
@@ -44,7 +46,7 @@ for county in counties:
 
             r_d = (n_d - d) / n
             r_r = (n_e - e) / n
-            r = (n + p - n_p) / n
+            r = n_n / n
 
             rs.append(r)
             r_ds.append(r_d)
@@ -69,7 +71,12 @@ for county in counties:
 
     r_d = np.mean(r_ds)
     r_r = np.mean(r_rs)
-    s = np.mean(ss)
+    plt.plot(ss)
+    plt.show()
+
+    do = True
+    s = np.mean([s for s in ss if s != 0]) if do else 0
+    # s/=1400
 
     T = np.array([
         [r, 0, 0, s],
@@ -79,7 +86,7 @@ for county in counties:
     ])
 
     print(T)
-    print("r:", r, "r_d:", r_d, "r_r:", r_r, "s: ", s)
+    print("r:", r, "r_d:", r_d, "r_r:", r_r, "s: ", s, '-1/s:', -1/s)
     
     plt.plot(cases[county], label="Cases")
     pred = []
