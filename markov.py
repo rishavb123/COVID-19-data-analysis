@@ -75,7 +75,7 @@ for county in counties:
         [r, 0, 0, s(i)],
         [r_d, 1, 0, 0],
         [r_r, 0, 1, 0],
-        [0, 0, 0, 0]
+        [1 - r, 0, 0, 1]
     ])
 
     print("r:", r, "r_d:", r_d, "r_r:", r_r)
